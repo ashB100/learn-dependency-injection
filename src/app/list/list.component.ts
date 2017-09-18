@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../data.service';
+import { LogDebugger } from '../log-debugger.service';
 
 @Component({
   selector: 'list-component',
@@ -10,16 +11,17 @@ import { DataService } from '../data.service';
       </li>
     </ul>
   `,
-  styleUrls: ['./list.component.css'],
-  providers: [DataService]
+  styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
   items:Array<any>;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private log: LogDebugger) { }
 
   ngOnInit() {
+    this.log.debug('Getting items...');
     this.items = this.dataService.getItems();
+    this.log.debug('Got items!');
   }
 
 }
