@@ -168,9 +168,72 @@ list-component.ts
 
 ## Factory Providers
 
+log-debugger.service.ts
+<code>
+export class LogDebugger {
+    // has a dependency of a boolean
+    constructor(private enabled: boolean) {}
+
+    debug(message) {
+        if (this.enabled) {
+            console.log(`DEBUG: ${message}`);
+        }
+    }
+}
+</code>
+
+list-component.ts
+<code>
+  // LogDebugger needs to have a boolen passed in to enable logging
+  constructor(private dataService: DataService, private log: LogDebugger) { }
+</code>
+
+app.module.ts
+<code>
+  providers: [
+    DataService,
+    {
+      provide: LogDebugger,
+      useFactory: () => {
+        return new LogDebugger(true);
+      }
+    }
+    ],
+</code>
+
+useFactory gets a function which returns the dependency instance we can inject later on. Inside that function, we can manually pass objects to a dependencies constructor without making these objects automatically available via DI. 
+
+EXCEPTION: Can't resolve all parameters for LogDebugger. 
+
+When you see an error like this, this usually means that we're requesting a dependency with a type that Angular doesn't know about. 
+
+
 
 ## Factory Providers with dependencies 
 
+app.module.ts
+
+<code>
+import { DataService } from './data.service';
+
+import { LogDebugger } from './log-debugger.service'
+
+import { ConsoleService } from './console.service';
+
+providers: [
+    DataService,
+    ConsoleService,
+    {
+      provide: LogDebugger,
+      useFactory: (consoleService) => {
+        return new LogDebugger(consoleService, true);
+      },
+      deps: [ConsoleService]
+    }
+],
+</code>
+
+We can list the dependencies we need for a provider factory in the dep property. We do that by creating a token. Angular will create an instance of the class which matches this token. We provide the token for this class in the providers list as well. All the dependencies which are declared through their tokens on the deps property will be injected into our factory function in the same order.  
 
 ## @Injectable
 
