@@ -290,6 +290,8 @@ import { Injectable } from '@angular/core';
 
 ## Value Providers
 
+Dependencies are not always objects created by classes or factory functons. Sometimes we just want to inject a simple value, which can be a primitive or maybe just a configuration object. For these we can use value providers.
+
 
 ## OpaqueToken  
 
